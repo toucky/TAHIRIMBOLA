@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Gestion Fonds Électronique</title>
+  <style>
+
+    :root{
+      --bg:#f2f2f7;
+      --card:rgba(255,255,255,.74);
+      --card-solid:#ffffff;
+      --ink:#1d1d1f;
+      --muted:#6e6e73;
+      --line:rgba(60,60,67,.14);
+      --brand:#007aff;
+      --brand2:#0a84ff;
+      --accent:#ff9f0a;
+      --danger:#ff3b30;
+      --ok:#34c759;
+      --glass:rgba(255,255,255,.68);
+      --shadow:0 18px 50px rgba(30,35,55,.10),0 2px 10px rgba(30,35,55,.06);
+      --shadow-3d:0 24px 60px rgba(20,30,60,.16), inset 0 1px 0 rgba(255,255,255,.92);
+      --radius:24px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html{background:var(--bg)}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 8% -5%,rgba(10,132,255,.22),transparent 32%),
+        radial-gradient(circle at 95% 5%,rgba(175,82,222,.14),transparent 30%),
+        linear-gradient(180deg,#f9fbff 0%,#f2f2f7 45%,#eef1f7 100%);
+      color:var(--ink);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    body:before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+      background:linear-gradient(115deg,rgba(255,255,255,.56),transparent 38%,rgba(255,255,255,.28));
+    }
+    button,input,select,textarea{font:inherit}
+    button{touch-action:manipulation}
+    .app{min-height:100vh;padding-bottom:92px}
+    header{
+      position:sticky;top:0;z-index:20;
+      color:var(--ink);padding:14px 16px 12px;
+      background:rgba(248,250,255,.72);
+      backdrop-filter:saturate(180%) blur(24px);
+      -webkit-backdrop-filter:saturate(180%) blur(24px);
+      border-bottom:1px solid rgba(255,255,255,.76);
+      box-shadow:0 8px 28px rgba(31,38,61,.06);
+    }
+    .topline{display:flex;justify-content:space-between;gap:12px;align-items:center;max-width:1180px;margin:auto}
+    .brand h1{
+      font-size:19px;margin:0 0 3px;font-weight:800;letter-spacing:-.45px;
+      background:linear-gradient(100deg,#111827,#3b445a);
+      -webkit-background-clip:text;background-clip:text;color:transparent
+    }
+    .brand p{margin:0;font-size:11px;color:var(--muted)}
+    .header-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:14px;padding:10px 14px;font-weight:750;cursor:pointer;
+      background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(245,247,252,.82));
+      color:#1d1d1f;
+      box-shadow:0 8px 20px rgba(36,42,65,.08),inset 0 1px 0 rgba(255,255,255,.95);
+      transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(36,42,65,.12),inset 0 1px 0 white}
+    .btn:active{transform:translateY(1px) scale(.985)}
+    .btn.primary{
+      border-color:rgba(255,255,255,.22);
+      background:linear-gradient(180deg,#168cff,#0071e3);
+      color:white;box-shadow:0 12px 28px rgba(0,122,255,.28),inset 0 1px 0 rgba(255,255,255,.35)
+    }
+    .btn.secondary{background:linear-gradient(180deg,#eef7ff,#e3f1ff);color:#0066cc}
+    .btn.danger{background:linear-gradient(180deg,#fff1f0,#ffe4e1);color:#d70015}
+    .btn.small{padding:8px 11px;font-size:12px}
+    .shell{max-width:1180px;margin:0 auto;padding:18px}
+    .hero{
+      position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at 88% 15%,rgba(255,255,255,.95),transparent 24%),
+        linear-gradient(135deg,rgba(255,255,255,.88),rgba(225,240,255,.72));
+      border:1px solid rgba(255,255,255,.86);
+      border-radius:30px;padding:22px;
+      box-shadow:var(--shadow-3d);margin-bottom:18px;
+      transform-style:preserve-3d;
+    }
+    .hero:after{
+      content:"";position:absolute;width:170px;height:170px;border-radius:50%;
+      right:-60px;bottom:-90px;background:linear-gradient(135deg,rgba(0,122,255,.2),rgba(175,82,222,.13));
+      filter:blur(2px);pointer-events:none
+    }
+    .hero h2{margin:0 0 6px;font-size:22px;letter-spacing:-.55px}.hero p{margin:0;color:var(--muted);line-height:1.5;font-size:14px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 18px;perspective:1000px}
+    .kpi{
+      position:relative;overflow:hidden;
+      background:var(--card);
+      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      border:1px solid rgba(255,255,255,.88);border-radius:22px;padding:16px;
+      box-shadow:var(--shadow);
+      transform-style:preserve-3d;
+      transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s ease;
+    }
+    .kpi:before{
+      content:"";position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(135deg,rgba(255,255,255,.72),transparent 45%);
+    }
+    .kpi:hover{transform:translateY(-4px) rotateX(1.5deg);box-shadow:0 22px 44px rgba(30,35,55,.14)}
+    .kpi span{position:relative;display:block;color:var(--muted);font-size:12px;margin-bottom:7px;font-weight:650}
+    .kpi strong{position:relative;font-size:21px;display:block;letter-spacing:-.5px}.kpi small{position:relative;font-size:11px;color:var(--muted)}
+    .kpi.alert strong{color:var(--danger)} .kpi.good strong{color:var(--ok)}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;perspective:1000px}
+    .card{
+      background:var(--card);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      border:1px solid rgba(255,255,255,.88);border-radius:var(--radius);padding:17px;
+      box-shadow:var(--shadow);transform-style:preserve-3d;
+      transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s ease;
+    }
+    .card:hover{transform:translateY(-3px);box-shadow:0 22px 50px rgba(30,35,55,.13),inset 0 1px 0 rgba(255,255,255,.88)}
+    .card h3{margin:0 0 12px;font-size:16px;letter-spacing:-.25px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .muted{color:var(--muted);font-size:13px}
+    .bar{
+      height:14px;border-radius:999px;background:rgba(118,118,128,.12);overflow:hidden;display:flex;
+      box-shadow:inset 0 2px 6px rgba(30,35,55,.08),0 1px 0 rgba(255,255,255,.8)
+    }
+    .bar > i{height:100%;display:block;box-shadow:inset 0 1px 0 rgba(255,255,255,.38)}
+    .b1{background:linear-gradient(90deg,#30d158,#34c759)}.b2{background:linear-gradient(90deg,#ffd60a,#ff9f0a)}
+    .b3{background:linear-gradient(90deg,#64d2ff,#007aff)}.b4{background:linear-gradient(90deg,#bf5af2,#af52de)}
+    .legend{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px;font-size:12px}
+    .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;box-shadow:0 2px 5px rgba(0,0,0,.12)}
+    .tabs{display:flex;gap:8px;overflow:auto;padding:2px 1px 13px;scrollbar-width:none}
+    .tabs button{
+      white-space:nowrap;border:1px solid rgba(255,255,255,.85);
+      background:rgba(255,255,255,.68);backdrop-filter:blur(18px);
+      border-radius:999px;padding:9px 15px;font-weight:750;color:#52525b;cursor:pointer;
+      box-shadow:0 5px 14px rgba(30,35,55,.05);
+      transition:.18s ease
+    }
+    .tabs button.active{
+      background:linear-gradient(180deg,#242426,#09090b);color:#fff;border-color:#111;
+      box-shadow:0 10px 20px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.2)
+    }
+    .view{display:none}.view.active{display:block;animation:appear .28s ease}
+    @keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .list{display:flex;flex-direction:column;gap:9px}
+    .item{
+      border:1px solid rgba(60,60,67,.10);border-radius:18px;padding:13px;
+      background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(249,250,253,.72));
+      display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+      box-shadow:0 6px 16px rgba(30,35,55,.05),inset 0 1px 0 rgba(255,255,255,.95);
+      transition:transform .18s ease,box-shadow .18s ease;
+    }
+    .item:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(30,35,55,.09)}
+    .item .name{font-weight:800;letter-spacing:-.15px}.item .meta{font-size:12px;color:var(--muted);margin-top:4px}
+    .amount{text-align:right;font-weight:800}.amount small{display:block;color:var(--muted);font-weight:500}
+    .badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;margin-top:6px}
+    .badge.open{background:rgba(255,159,10,.13);color:#b45309}.badge.done{background:rgba(52,199,89,.13);color:#16883a}.badge.stock{background:rgba(0,122,255,.11);color:#0066cc}
+    .empty{padding:28px 12px;text-align:center;color:var(--muted);border:1px dashed rgba(60,60,67,.22);border-radius:18px;background:rgba(255,255,255,.35)}
+    .fab{
+      position:fixed;right:18px;bottom:96px;z-index:30;width:60px;height:60px;border-radius:20px;
+      border:1px solid rgba(255,255,255,.3);
+      background:linear-gradient(145deg,#2395ff,#0066d6);color:white;font-size:30px;
+      box-shadow:0 18px 36px rgba(0,122,255,.34),inset 0 1px 0 rgba(255,255,255,.42);
+      cursor:pointer;transition:.2s ease;transform:translateZ(0)
+    }
+    .fab:active{transform:scale(.93) rotate(-4deg)}
+    nav{
+      position:fixed;bottom:0;left:0;right:0;z-index:25;
+      background:rgba(248,249,253,.76);backdrop-filter:saturate(180%) blur(26px);
+      -webkit-backdrop-filter:saturate(180%) blur(26px);
+      border-top:1px solid rgba(255,255,255,.8);
+      box-shadow:0 -8px 30px rgba(30,35,55,.08);
+      display:flex;justify-content:center;padding:7px 4px calc(7px + env(safe-area-inset-bottom))
+    }
+    nav .navinner{max-width:800px;width:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
+    nav button{background:none;border:0;padding:6px 2px;color:#8e8e93;font-size:10px;cursor:pointer;transition:.18s ease}
+    nav button b{display:block;font-size:18px;margin-bottom:2px;transition:transform .18s ease}
+    nav button.active{color:var(--brand);font-weight:800}
+    nav button.active b{transform:translateY(-2px) scale(1.08)}
+    .modal{
+      position:fixed;inset:0;background:rgba(10,12,20,.34);backdrop-filter:blur(10px);
+      display:none;align-items:flex-end;justify-content:center;z-index:50
+    }
+    .modal.open{display:flex;animation:fadeIn .2s ease}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .sheet{
+      background:rgba(250,251,255,.94);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+      width:min(760px,100%);max-height:92vh;overflow:auto;border-radius:30px 30px 0 0;
+      padding:19px 17px 26px;box-shadow:0 -22px 55px rgba(10,15,35,.2);
+      border:1px solid rgba(255,255,255,.9);animation:sheetUp .28s cubic-bezier(.2,.8,.2,1)
+    }
+    @keyframes sheetUp{from{transform:translateY(28px);opacity:.7}to{transform:none;opacity:1}}
+    .sheet-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .sheet-head h3{margin:0;letter-spacing:-.3px}.close{
+      border:0;background:rgba(118,118,128,.12);width:36px;height:36px;border-radius:50%;cursor:pointer;color:#555;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9)
+    }
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    label{font-size:12px;font-weight:800;color:#4b5563;display:block}
+    input,select,textarea{
+      width:100%;margin-top:6px;border:1px solid rgba(60,60,67,.14);border-radius:14px;padding:12px 13px;
+      background:rgba(255,255,255,.84);color:#1d1d1f;outline:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 4px 12px rgba(30,35,55,.04)
+    }
+    input:focus,select:focus,textarea:focus{
+      border-color:rgba(0,122,255,.55);box-shadow:0 0 0 4px rgba(0,122,255,.10),inset 0 1px 0 rgba(255,255,255,.95)
+    }
+    textarea{min-height:82px;resize:vertical}
+    .full{grid-column:1/-1}
+    .form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:16px}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th,td{padding:10px 8px;border-bottom:1px solid rgba(60,60,67,.10);text-align:left;vertical-align:top}
+    th{color:#6e6e73;background:rgba(248,249,252,.88);position:sticky;top:0}
+    .table-wrap{overflow:auto;max-height:450px;border:1px solid rgba(60,60,67,.10);border-radius:16px;background:rgba(255,255,255,.5)}
+    .report-box{
+      background:linear-gradient(145deg,#202124,#09090b);color:white;border-radius:22px;padding:19px;
+      box-shadow:0 18px 34px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.18)
+    }
+    .report-box h3{margin-top:0}.report-lines{display:grid;grid-template-columns:1fr auto;gap:8px 14px;font-size:13px}
+    .report-lines b{text-align:right}.report-total{border-top:1px solid rgba(255,255,255,.18);padding-top:10px;margin-top:6px;font-size:15px}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.toolbar select{width:auto;margin:0;min-width:180px}
+    .autosave{
+      position:fixed;left:50%;bottom:92px;z-index:70;transform:translate(-50%,20px);
+      padding:9px 13px;border-radius:999px;background:rgba(28,28,30,.9);color:white;
+      font-size:12px;font-weight:700;box-shadow:0 12px 28px rgba(0,0,0,.22);
+      opacity:0;pointer-events:none;transition:.24s ease;backdrop-filter:blur(16px)
+    }
+    .autosave.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:780px){
+      .kpis{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}.full{grid-column:auto}
+      .topline{align-items:flex-start}.header-actions .btn span{display:none}
+      .hero{padding:18px;border-radius:26px}
+    }
+    @media(max-width:420px){
+      .shell{padding:12px}.kpi strong{font-size:17px}.kpis{gap:8px}.kpi{padding:13px;border-radius:19px}
+      nav button{font-size:9px} nav button b{font-size:17px}
+      .card{border-radius:21px}.item{border-radius:16px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    }
+
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="topline">
+      <div class="brand">
+        <h1>Gestion Fonds Électronique</h1>
+        <p>Suivi du capital, achats, avances, stock et ventes · sauvegarde automatique</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn small primary" onclick="openNewProject()">➕ <span>Nouveau projet</span></button>
+        <button class="btn small" onclick="saveCurrentProject()">💾 <span>Sauvegarder</span></button>
+        <button class="btn small" onclick="openProjectManager()">📁 <span>Projets</span></button>
+        <button class="btn small" onclick="seedDemo()">🧪 <span>Charger démo</span></button>
+        <button class="btn small" onclick="exportData()">⬇️ <span>Exporter</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+        <div>
+          <div class="muted" style="font-weight:800;margin-bottom:4px">PROJET ACTUEL</div>
+          <h2 id="currentProjectName" style="margin-bottom:4px">Nouveau projet</h2>
+          <div id="currentProjectMeta" class="muted" style="margin-bottom:12px">Aucune information client.</div>
+          <h2 style="font-size:18px">Où est l'argent ?</h2>
+          <p>Chaque Ariary est suivi selon son état : disponible, engagé en avance, transformé en marchandise ou déjà récupéré par une vente.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" onclick="openNewProject()">+ Nouveau projet</button>
+          <button class="btn" onclick="saveCurrentProject()">💾 Sauvegarder le projet</button>
+          <button class="btn secondary" onclick="openProjectManager()">Changer de projet</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="tabs" id="topTabs">
+      <button class="active" data-view="dashboard">Vue générale</button>
+      <button data-view="fonds">Fonds</button>
+      <button data-view="achats">Achats</button>
+      <button data-view="avances">Avances</button>
+      <button data-view="ventes">Ventes</button>
+      <button data-view="rapports">Rapports</button>
+    </div>
+
+    <section id="dashboard" class="view active">
+      <div class="kpis">
+        <div class="kpi"><span>Capital total reçu</span><strong id="kCapital">0 Ar</strong><small>Tous les fonds</small></div>
+        <div class="kpi good"><span>Argent disponible</span><strong id="kDisponible">0 Ar</strong><small>Encore utilisable</small></div>
+        <div class="kpi"><span>Avances en cours</span><strong id="kAvances">0 Ar</strong><small>Argent engagé</small></div>
+        <div class="kpi"><span>Bénéfice réalisé</span><strong id="kBenefice">0 Ar</strong><small>Sur ventes enregistrées</small></div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="section-title"><h3>Répartition du capital</h3><span class="muted" id="situationDate"></span></div>
+          <div class="bar" id="moneyBar"></div>
+          <div class="legend">
+            <div><span class="dot b1"></span>Disponible : <b id="lDisponible">0 Ar</b></div>
+            <div><span class="dot b2"></span>Avances : <b id="lAvances">0 Ar</b></div>
+            <div><span class="dot b3"></span>Stock : <b id="lStock">0 Ar</b></div>
+            <div><span class="dot b4"></span>Capital sorti/livré : <b id="lLivre">0 Ar</b></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Contrôle de cohérence</h3>
+          <div id="controlBox" class="empty">Ajoutez un fonds pour commencer le contrôle.</div>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:16px">
+        <div class="card"><h3>Dernières opérations</h3><div id="recentList" class="list"></div></div>
+        <div class="card"><h3>Fonds en cours</h3><div id="fundListDash" class="list"></div></div>
+      </div>
+    </section>
+
+    <section id="fonds" class="view">
+      <div class="card">
+        <div class="section-title"><h3>Fonds reçus</h3><button class="btn primary small" onclick="openForm('fonds')">+ Nouveau fonds</button></div>
+        <div id="fundList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="achats" class="view">
+      <div class="card">
+        <div class="section-title"><h3>Achats de marchandises</h3><button class="btn primary small" onclick="openForm('achats')">+ Nouvel achat</button></div>
+        <div id="achatList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="avances" class="view">
+      <div class="card">
+        <div class="section-title"><h3>Avances / sommes engagées</h3><button class="btn primary small" onclick="openForm('avances')">+ Nouvelle avance</button></div>
+        <div id="avanceList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="ventes" class="view">
+      <div class="card">
+        <div class="section-title"><h3>Ventes / livraisons au bailleur</h3><button class="btn primary small" onclick="openForm('ventes')">+ Nouvelle vente</button></div>
+        <div id="venteList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="rapports" class="view">
+      <div class="grid">
+        <div class="card">
+          <div class="section-title"><h3>Rapport par fonds</h3></div>
+          <div class="toolbar">
+            <select id="reportFund" onchange="renderReports()"></select>
+            <button class="btn secondary small" onclick="printReport()">🖨️ Imprimer</button>
+          </div>
+          <div id="reportSummary"></div>
+        </div>
+        <div class="card">
+          <h3>Historique complet</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Type</th><th>Détail</th><th>Montant</th></tr></thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="fab" onclick="openQuickAdd()" aria-label="Ajouter">+</button>
+
+  <div id="autosaveToast" class="autosave">✓ Sauvegardé automatiquement</div>
+
+  <nav>
+    <div class="navinner">
+      <button class="active" data-view="dashboard"><b>⌂</b>Accueil</button>
+      <button data-view="fonds"><b>💰</b>Fonds</button>
+      <button data-view="achats"><b>🛒</b>Achats</button>
+      <button data-view="avances"><b>⏳</b>Avances</button>
+      <button data-view="ventes"><b>📦</b>Ventes</button>
+      <button data-view="rapports"><b>📊</b>Rapports</button>
+    </div>
+  </nav>
+</div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3 id="modalTitle">Ajouter</h3>
+      <button class="close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY='gestion_fonds_electro_projects_v2';
+const LEGACY_KEY='gestion_fonds_electro_v1';
+
+function blankDB(){
+  return {fonds:[], achats:[], avances:[], ventes:[]};
+}
+function newProjectObject(name='Nouveau projet', client='', note=''){
+  return {
+    id:'P-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+    name, client, note,
+    createdAt:new Date().toISOString(),
+    db:blankDB()
+  };
+}
+function loadAppState(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(saved && Array.isArray(saved.projects) && saved.projects.length) return saved;
+  }catch(e){}
+  // Migration automatique de l'ancienne version
+  try{
+    const legacy=JSON.parse(localStorage.getItem(LEGACY_KEY));
+    if(legacy && (legacy.fonds?.length || legacy.achats?.length || legacy.avances?.length || legacy.ventes?.length)){
+      const p=newProjectObject('Projet importé','');
+      p.db=legacy;
+      const state={projects:[p],currentProjectId:p.id};
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      return state;
+    }
+  }catch(e){}
+  const p=newProjectObject('Mon premier projet','');
+  return {projects:[p],currentProjectId:p.id};
+}
+let appState=loadAppState();
+function currentProject(){
+  let p=appState.projects.find(x=>x.id===appState.currentProjectId);
+  if(!p){
+    p=appState.projects[0] || newProjectObject();
+    if(!appState.projects.length) appState.projects=[p];
+    appState.currentProjectId=p.id;
+  }
+  return p;
+}
+let db=currentProject().db;
+function saveState(){
+  const p=currentProject();
+  p.db=db;
+  p.updatedAt=new Date().toISOString();
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(appState));
+}
+let autosaveTimer=null;
+function showAutosave(message='✓ Sauvegardé automatiquement'){
+  const el=document.getElementById('autosaveToast');
+  if(!el)return;
+  el.textContent=message;
+  el.classList.add('show');
+  clearTimeout(autosaveTimer);
+  autosaveTimer=setTimeout(()=>el.classList.remove('show'),1600);
+}
+function saveDB(){ saveState(); renderAll(); showAutosave(); }
+function money(v){ return Math.round(Number(v||0)).toLocaleString('fr-FR')+' Ar'; }
+function today(){ return new Date().toISOString().slice(0,10); }
+function uid(prefix){ return prefix+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6); }
+function fmtDate(d){ if(!d)return '—'; return new Date(d+'T12:00:00').toLocaleDateString('fr-FR'); }
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+function sum(arr, fn){ return arr.reduce((a,x)=>a+Number(fn(x)||0),0); }
+function fundById(id){ return db.fonds.find(x=>x.id===id); }
+function fundName(id){ const f=fundById(id); return f?f.nom:'Fonds inconnu'; }
+
+function calcGlobal(){
+  const capital=sum(db.fonds,x=>x.montant);
+  const achats=sum(db.achats,x=>x.total);
+  const avanceOpen=sum(db.avances.filter(x=>x.statut==='en_cours'),x=>x.montant);
+  const coutVendu=sum(db.ventes,x=>x.cout);
+  const ventes=sum(db.ventes,x=>x.prix);
+  const benefice=ventes-coutVendu;
+  const stock=Math.max(0, achats-coutVendu);
+  const disponible=capital-achats-avanceOpen;
+  const livre=coutVendu;
+  const ecart=capital-(disponible+avanceOpen+stock+livre);
+  return {capital,achats,avanceOpen,coutVendu,ventes,benefice,stock,disponible,livre,ecart};
+}
+
+function calcFund(id){
+  const f=fundById(id); if(!f)return null;
+  const achats=db.achats.filter(x=>x.fondId===id);
+  const avances=db.avances.filter(x=>x.fondId===id);
+  const ventes=db.ventes.filter(x=>x.fondId===id);
+  const a=sum(achats,x=>x.total);
+  const av=sum(avances.filter(x=>x.statut==='en_cours'),x=>x.montant);
+  const cv=sum(ventes,x=>x.cout);
+  const pv=sum(ventes,x=>x.prix);
+  const stock=Math.max(0,a-cv);
+  const disponible=Number(f.montant)-a-av;
+  return {capital:Number(f.montant), achats:a, avances:av, coutVendu:cv, ventes:pv, benefice:pv-cv, stock, disponible};
+}
+
+
+function updateProjectHeader(){
+  const p=currentProject();
+  const n=document.getElementById('currentProjectName');
+  const m=document.getElementById('currentProjectMeta');
+  if(n) n.textContent=p.name || 'Projet sans nom';
+  if(m){
+    const parts=[];
+    if(p.client) parts.push('Client : '+p.client);
+    if(p.note) parts.push(p.note);
+    m.textContent=parts.length?parts.join(' · '):'Projet vide prêt à être utilisé.';
+  }
+}
+function openNewProject(){
+  openModal('Créer un nouveau projet',`
+    <form onsubmit="createProject(event)" class="form-grid">
+      <label>Nom du projet<input name="name" required placeholder="Ex. Gestion fonds Client Rakoto"></label>
+      <label>Client / société<input name="client" placeholder="Nom du client"></label>
+      <label class="full">Description / note<input name="note" placeholder="Ex. Achats de matériels électroniques"></label>
+      <div class="full" style="padding:12px;border-radius:12px;background:#f8fafc;color:#475467;font-size:13px">
+        Le nouveau projet sera totalement vide. Les données du projet actuel seront conservées séparément et resteront accessibles depuis “Projets”.
+      </div>
+      <div class="form-actions full">
+        <button type="button" class="btn" onclick="closeModal()">Annuler</button>
+        <button class="btn primary">Créer le projet vide</button>
+      </div>
+    </form>`);
+}
+function createProject(e){
+  e.preventDefault();
+  const f=e.target;
+  const p=newProjectObject(f.name.value.trim(),f.client.value.trim(),f.note.value.trim());
+  appState.projects.push(p);
+  appState.currentProjectId=p.id;
+  db=p.db;
+  saveState();
+  closeModal();
+  renderAll();
+  switchView('dashboard');
+}
+function switchProject(id){
+  const p=appState.projects.find(x=>x.id===id);
+  if(!p) return;
+  appState.currentProjectId=id;
+  db=p.db;
+  saveState();
+  closeModal();
+  renderAll();
+  switchView('dashboard');
+}
+function deleteProject(id){
+  if(appState.projects.length<=1){
+    alert('Il faut garder au moins un projet. Créez d’abord un autre projet si vous voulez supprimer celui-ci.');
+    return;
+  }
+  const p=appState.projects.find(x=>x.id===id);
+  if(!p) return;
+  if(!confirm('Supprimer définitivement le projet "'+(p.name||'Sans nom')+'" et toutes ses données ?')) return;
+  appState.projects=appState.projects.filter(x=>x.id!==id);
+  if(appState.currentProjectId===id) appState.currentProjectId=appState.projects[0].id;
+  db=currentProject().db;
+  saveState();
+  openProjectManager();
+  renderAll();
+}
+function duplicateProject(id){
+  const src=appState.projects.find(x=>x.id===id);
+  if(!src) return;
+  const copy=newProjectObject((src.name||'Projet')+' - copie',src.client||'',src.note||'');
+  copy.db=JSON.parse(JSON.stringify(src.db));
+  appState.projects.push(copy);
+  appState.currentProjectId=copy.id;
+  db=copy.db;
+  saveState();
+  closeModal();
+  renderAll();
+}
+function openProjectManager(){
+  const current=appState.currentProjectId;
+  const rows=appState.projects.map(p=>{
+    const d=p.db||blankDB();
+    const cap=(d.fonds||[]).reduce((a,x)=>a+Number(x.montant||0),0);
+    return `<div class="item" style="${p.id===current?'border-color:#0f766e;background:#f0fdfa':''}">
+      <div>
+        <div class="name">${esc(p.name||'Projet sans nom')}</div>
+        <div class="meta">${esc(p.client||'Client non précisé')} · Capital enregistré : ${money(cap)}</div>
+        ${p.id===current?'<span class="badge done">Projet actuel</span>':''}
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+        ${p.id!==current?`<button class="btn small primary" onclick="switchProject('${p.id}')">Ouvrir</button>`:''}
+        <button class="btn small secondary" onclick="duplicateProject('${p.id}')">Dupliquer</button>
+        <button class="btn small danger" onclick="deleteProject('${p.id}')">Suppr.</button>
+      </div>
+    </div>`;
+  }).join('');
+  openModal('Mes projets',`
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="btn danger small" onclick="resetCurrentProject()">Vider le projet actuel</button>
+      <button class="btn primary small" onclick="openNewProject()">+ Nouveau projet</button>
+    </div>
+    <div class="list">${rows}</div>`);
+}
+function resetCurrentProject(){
+  const p=currentProject();
+  if(!confirm('Vider toutes les données du projet "'+(p.name||'Sans nom')+'" ? Cette action est irréversible.')) return;
+  p.db=blankDB();
+  db=p.db;
+  saveState();
+  renderAll();
+}
+
+function renderAll(){
+  updateProjectHeader(); renderDashboard(); renderFunds(); renderAchats(); renderAvances(); renderVentes(); renderReports(); refreshFundSelects();
+}
+
+function renderDashboard(){
+  const c=calcGlobal();
+  kCapital.textContent=money(c.capital); kDisponible.textContent=money(c.disponible);
+  kAvances.textContent=money(c.avanceOpen); kBenefice.textContent=money(c.benefice);
+  lDisponible.textContent=money(c.disponible); lAvances.textContent=money(c.avanceOpen);
+  lStock.textContent=money(c.stock); lLivre.textContent=money(c.livre);
+  situationDate.textContent=new Date().toLocaleDateString('fr-FR');
+  const total=Math.max(c.capital,1);
+  moneyBar.innerHTML=[
+    ['b1',Math.max(c.disponible,0)],['b2',c.avanceOpen],['b3',c.stock],['b4',c.livre]
+  ].map(([cl,v])=>`<i class="${cl}" style="width:${Math.max(0,Math.min(100,v/total*100))}%"></i>`).join('');
+  if(c.capital===0){
+    controlBox.className='empty'; controlBox.innerHTML='Ajoutez un fonds pour commencer le contrôle.';
+  }else{
+    const ok=Math.abs(c.ecart)<1;
+    controlBox.className='';
+    controlBox.innerHTML=`<div style="padding:14px;border-radius:14px;background:${ok?'#ecfdf3':'#fef3f2'};color:${ok?'#067647':'#b42318'}">
+      <b>${ok?'✓ Capital cohérent':'⚠ Écart détecté'}</b><br>
+      <span style="font-size:13px">${ok?'Le capital est réparti entre disponible, avances, stock et capital déjà livré.':'Écart calculé : '+money(c.ecart)}</span>
+    </div>`;
+  }
+  const ops=getHistory().slice(0,5);
+  recentList.innerHTML=ops.length?ops.map(op=>`<div class="item"><div><div class="name">${esc(op.type)}</div><div class="meta">${fmtDate(op.date)} · ${esc(op.detail)}</div></div><div class="amount">${money(op.montant)}</div></div>`).join(''):'<div class="empty">Aucune opération.</div>';
+  const fs=db.fonds.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4);
+  fundListDash.innerHTML=fs.length?fs.map(f=>{
+    const c=calcFund(f.id);
+    return `<div class="item"><div><div class="name">${esc(f.nom)}</div><div class="meta">${fmtDate(f.date)} · ${esc(f.bailleur||'Bailleur non précisé')}</div><span class="badge open">${esc(f.statut||'En cours')}</span></div><div class="amount">${money(c.disponible)}<small>disponible</small></div></div>`;
+  }).join(''):'<div class="empty">Aucun fonds enregistré.</div>';
+}
+
+function renderFunds(){
+  const arr=db.fonds.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  fundList.innerHTML=arr.length?arr.map(f=>{
+    const c=calcFund(f.id);
+    return `<div class="item">
+      <div><div class="name">${esc(f.nom)}</div><div class="meta">${fmtDate(f.date)} · ${esc(f.bailleur||'Sans bailleur')} · ${esc(f.objet||'Sans objet')}</div>
+      <span class="badge ${f.statut==='Clôturé'?'done':'open'}">${esc(f.statut||'En cours')}</span></div>
+      <div class="amount">${money(f.montant)}<small>Reste : ${money(c.disponible)}</small>
+      <button class="btn small danger" onclick="removeItem('fonds','${f.id}')">Suppr.</button></div>
+    </div>`;
+  }).join(''):'<div class="empty">Aucun fonds. Appuyez sur “Nouveau fonds”.</div>';
+}
+
+function renderAchats(){
+  const arr=db.achats.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  achatList.innerHTML=arr.length?arr.map(x=>`<div class="item">
+    <div><div class="name">${esc(x.produit)} ${x.qte?`× ${esc(x.qte)}`:''}</div><div class="meta">${fmtDate(x.date)} · ${esc(x.fournisseur||'Fournisseur non précisé')} · ${esc(fundName(x.fondId))}</div>
+    <span class="badge stock">${esc(x.categorie||'Électronique')}</span></div>
+    <div class="amount">${money(x.total)}<small>${x.frais?`dont frais ${money(x.frais)}`:'coût total'}</small>
+    <button class="btn small danger" onclick="removeItem('achats','${x.id}')">Suppr.</button></div>
+  </div>`).join(''):'<div class="empty">Aucun achat enregistré.</div>';
+}
+
+function renderAvances(){
+  const arr=db.avances.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  avanceList.innerHTML=arr.length?arr.map(x=>`<div class="item">
+    <div><div class="name">${esc(x.motif)}</div><div class="meta">${fmtDate(x.date)} · ${esc(x.responsable||'Responsable non précisé')} · ${esc(fundName(x.fondId))}</div>
+    <span class="badge ${x.statut==='en_cours'?'open':'done'}">${x.statut==='en_cours'?'En cours':'Clôturée'}</span></div>
+    <div class="amount">${money(x.montant)}<small>${x.statut==='en_cours'?'engagé':'régularisé'}</small>
+    ${x.statut==='en_cours'?`<button class="btn small secondary" onclick="closeAdvance('${x.id}')">Clôturer</button>`:''}
+    <button class="btn small danger" onclick="removeItem('avances','${x.id}')">Suppr.</button></div>
+  </div>`).join(''):'<div class="empty">Aucune avance enregistrée.</div>';
+}
+
+function renderVentes(){
+  const arr=db.ventes.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  venteList.innerHTML=arr.length?arr.map(x=>`<div class="item">
+    <div><div class="name">${esc(x.produit)}</div><div class="meta">${fmtDate(x.date)} · ${esc(x.client||'Bailleur')} · ${esc(fundName(x.fondId))}</div>
+    <span class="badge done">Bénéfice : ${money(Number(x.prix)-Number(x.cout))}</span></div>
+    <div class="amount">${money(x.prix)}<small>Coût : ${money(x.cout)}</small>
+    <button class="btn small danger" onclick="removeItem('ventes','${x.id}')">Suppr.</button></div>
+  </div>`).join(''):'<div class="empty">Aucune vente/livraison enregistrée.</div>';
+}
+
+function getHistory(fundId=null){
+  const out=[];
+  db.fonds.filter(x=>!fundId||x.id===fundId).forEach(x=>out.push({date:x.date,type:'Fonds reçu',detail:x.nom+' · '+(x.bailleur||''),montant:x.montant}));
+  db.achats.filter(x=>!fundId||x.fondId===fundId).forEach(x=>out.push({date:x.date,type:'Achat',detail:x.produit+' · '+(x.fournisseur||''),montant:-x.total}));
+  db.avances.filter(x=>!fundId||x.fondId===fundId).forEach(x=>out.push({date:x.date,type:x.statut==='en_cours'?'Avance en cours':'Avance clôturée',detail:x.motif+' · '+(x.responsable||''),montant:x.statut==='en_cours'?-x.montant:0}));
+  db.ventes.filter(x=>!fundId||x.fondId===fundId).forEach(x=>out.push({date:x.date,type:'Vente/Livraison',detail:x.produit+' · '+(x.client||''),montant:x.prix}));
+  return out.sort((a,b)=>b.date.localeCompare(a.date));
+}
+
+function renderReports(){
+  const sel=reportFund; const current=sel.value;
+  sel.innerHTML='<option value="">Tous les fonds</option>'+db.fonds.map(f=>`<option value="${f.id}">${esc(f.nom)}</option>`).join('');
+  if([...sel.options].some(o=>o.value===current)) sel.value=current;
+  const id=sel.value;
+  const c=id?calcFund(id):calcGlobal();
+  const title=id?fundName(id):'Situation générale';
+  reportSummary.innerHTML=`<div class="report-box">
+    <h3>${esc(title)}</h3>
+    <div class="report-lines">
+      <span>Capital reçu</span><b>${money(c.capital)}</b>
+      <span>Achats</span><b>${money(c.achats)}</b>
+      <span>Avances en cours</span><b>${money(c.avances ?? c.avanceOpen)}</b>
+      <span>Stock estimé au coût</span><b>${money(c.stock)}</b>
+      <span>Ventes</span><b>${money(c.ventes)}</b>
+      <span>Bénéfice réalisé</span><b>${money(c.benefice)}</b>
+      <span class="report-total">Argent disponible</span><b class="report-total">${money(c.disponible)}</b>
+    </div>
+  </div>`;
+  const hist=getHistory(id||null);
+  historyBody.innerHTML=hist.length?hist.map(x=>`<tr><td>${fmtDate(x.date)}</td><td>${esc(x.type)}</td><td>${esc(x.detail)}</td><td style="font-weight:800">${money(x.montant)}</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;color:#667085">Aucune donnée.</td></tr>';
+}
+
+function refreshFundSelects(){}
+
+function switchView(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===view));
+  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
+
+function openModal(title,html){
+  modalTitle.textContent=title; modalContent.innerHTML=html; modal.classList.add('open');
+}
+function closeModal(){ modal.classList.remove('open'); }
+
+function fundOptions(){
+  return db.fonds.map(f=>`<option value="${f.id}">${esc(f.nom)} — ${money(calcFund(f.id).disponible)} dispo</option>`).join('');
+}
+function ensureFund(){
+  if(!db.fonds.length){ alert('Créez d’abord un fonds reçu.'); openForm('fonds'); return false; } return true;
+}
+
+function openQuickAdd(){
+  openModal('Ajouter une opération',`
+    <div class="list">
+      <button class="btn primary" onclick="openForm('fonds')">💰 Nouveau fonds reçu</button>
+      <button class="btn secondary" onclick="openForm('achats')">🛒 Nouvel achat</button>
+      <button class="btn secondary" onclick="openForm('avances')">⏳ Nouvelle avance</button>
+      <button class="btn secondary" onclick="openForm('ventes')">📦 Nouvelle vente/livraison</button>
+    </div>`);
+}
+
+function openForm(type){
+  if(type!=='fonds' && !ensureFund())return;
+  if(type==='fonds'){
+    openModal('Nouveau fonds reçu',`
+      <form onsubmit="submitFund(event)" class="form-grid">
+        <label>Nom du fonds<input name="nom" required placeholder="Ex. Fonds Octobre 2026"></label>
+        <label>Date de réception<input type="date" name="date" value="${today()}" required></label>
+        <label>Bailleur de fonds<input name="bailleur" placeholder="Nom du bailleur"></label>
+        <label>Capital reçu (Ar)<input type="number" min="0" name="montant" required placeholder="10000000"></label>
+        <label class="full">Objet du fonds<input name="objet" placeholder="Ex. Achat téléphones et ordinateurs"></label>
+        <div class="form-actions full"><button type="button" class="btn" onclick="closeModal()">Annuler</button><button class="btn primary">Enregistrer</button></div>
+      </form>`);
+  }
+  if(type==='achats'){
+    openModal('Nouvel achat',`
+      <form onsubmit="submitAchat(event)" class="form-grid">
+        <label>Fonds utilisé<select name="fondId" required>${fundOptions()}</select></label>
+        <label>Date d'achat<input type="date" name="date" value="${today()}" required></label>
+        <label>Produit / matériel<input name="produit" required placeholder="Ex. Samsung A55"></label>
+        <label>Catégorie<select name="categorie"><option>Téléphone</option><option>Ordinateur</option><option>Accessoire</option><option>TV</option><option>Autre électronique</option></select></label>
+        <label>Quantité<input type="number" name="qte" min="1" value="1" required></label>
+        <label>Prix unitaire (Ar)<input type="number" name="prixUnitaire" min="0" required oninput="calcPurchaseForm(this.form)"></label>
+        <label>Frais supplémentaires (Ar)<input type="number" name="frais" min="0" value="0" oninput="calcPurchaseForm(this.form)"></label>
+        <label>Coût total<input name="totalDisplay" readonly value="0 Ar"></label>
+        <label>Fournisseur<input name="fournisseur" placeholder="Nom / société"></label>
+        <label>Référence / facture<input name="reference" placeholder="N° facture ou référence"></label>
+        <label class="full">Note<textarea name="note" placeholder="Détails utiles"></textarea></label>
+        <div class="form-actions full"><button type="button" class="btn" onclick="closeModal()">Annuler</button><button class="btn primary">Enregistrer</button></div>
+      </form>`);
+  }
+  if(type==='avances'){
+    openModal('Nouvelle avance',`
+      <form onsubmit="submitAvance(event)" class="form-grid">
+        <label>Fonds utilisé<select name="fondId" required>${fundOptions()}</select></label>
+        <label>Date<input type="date" name="date" value="${today()}" required></label>
+        <label>Montant avancé (Ar)<input type="number" min="0" name="montant" required></label>
+        <label>Responsable<input name="responsable" placeholder="Personne ayant reçu l'avance"></label>
+        <label class="full">Motif<input name="motif" required placeholder="Ex. Achat de 2 ordinateurs"></label>
+        <label class="full">Note<textarea name="note" placeholder="Échéance, fournisseur, détails..."></textarea></label>
+        <div class="form-actions full"><button type="button" class="btn" onclick="closeModal()">Annuler</button><button class="btn primary">Enregistrer</button></div>
+      </form>`);
+  }
+  if(type==='ventes'){
+    openModal('Nouvelle vente / livraison',`
+      <form onsubmit="submitVente(event)" class="form-grid">
+        <label>Fonds concerné<select name="fondId" required>${fundOptions()}</select></label>
+        <label>Date<input type="date" name="date" value="${today()}" required></label>
+        <label>Produit vendu/livré<input name="produit" required placeholder="Ex. Samsung A55 × 2"></label>
+        <label>Bailleur / client<input name="client" placeholder="Nom"></label>
+        <label>Coût réel correspondant (Ar)<input type="number" min="0" name="cout" required></label>
+        <label>Prix facturé / vendu (Ar)<input type="number" min="0" name="prix" required></label>
+        <label class="full">Note<textarea name="note" placeholder="N° livraison, règlement, etc."></textarea></label>
+        <div class="form-actions full"><button type="button" class="btn" onclick="closeModal()">Annuler</button><button class="btn primary">Enregistrer</button></div>
+      </form>`);
+  }
+}
+
+function calcPurchaseForm(f){
+  const total=(Number(f.qte.value||0)*Number(f.prixUnitaire.value||0))+Number(f.frais.value||0);
+  f.totalDisplay.value=money(total);
+}
+function submitFund(e){
+  e.preventDefault(); const f=e.target;
+  db.fonds.push({id:uid('F'),nom:f.nom.value.trim(),date:f.date.value,bailleur:f.bailleur.value.trim(),montant:Number(f.montant.value),objet:f.objet.value.trim(),statut:'En cours'});
+  saveDB(); closeModal();
+}
+function submitAchat(e){
+  e.preventDefault(); const f=e.target;
+  const total=Number(f.qte.value)*Number(f.prixUnitaire.value)+Number(f.frais.value||0);
+  const cf=calcFund(f.fondId.value);
+  if(total>cf.disponible && !confirm('Attention : cet achat dépasse le solde disponible de ce fonds. Enregistrer quand même ?')) return;
+  db.achats.push({id:uid('A'),fondId:f.fondId.value,date:f.date.value,produit:f.produit.value.trim(),categorie:f.categorie.value,qte:Number(f.qte.value),prixUnitaire:Number(f.prixUnitaire.value),frais:Number(f.frais.value||0),total,fournisseur:f.fournisseur.value.trim(),reference:f.reference.value.trim(),note:f.note.value.trim()});
+  saveDB(); closeModal();
+}
+function submitAvance(e){
+  e.preventDefault(); const f=e.target;
+  const montant=Number(f.montant.value); const cf=calcFund(f.fondId.value);
+  if(montant>cf.disponible && !confirm('Attention : cette avance dépasse le solde disponible de ce fonds. Enregistrer quand même ?')) return;
+  db.avances.push({id:uid('AV'),fondId:f.fondId.value,date:f.date.value,montant,responsable:f.responsable.value.trim(),motif:f.motif.value.trim(),note:f.note.value.trim(),statut:'en_cours'});
+  saveDB(); closeModal();
+}
+function submitVente(e){
+  e.preventDefault(); const f=e.target;
+  db.ventes.push({id:uid('V'),fondId:f.fondId.value,date:f.date.value,produit:f.produit.value.trim(),client:f.client.value.trim(),cout:Number(f.cout.value),prix:Number(f.prix.value),note:f.note.value.trim()});
+  saveDB(); closeModal();
+}
+function closeAdvance(id){
+  const x=db.avances.find(a=>a.id===id); if(!x)return;
+  const depense=prompt('Montant réellement dépensé sur cette avance (Ar) :',x.montant);
+  if(depense===null)return;
+  const d=Number(depense); if(!Number.isFinite(d)||d<0){alert('Montant invalide');return;}
+  x.statut='cloturee'; x.montantDepense=d; x.resteRendu=Math.max(0,Number(x.montant)-d);
+  if(d>0){
+    db.achats.push({id:uid('A'),fondId:x.fondId,date:today(),produit:'Régularisation avance : '+x.motif,categorie:'Autre électronique',qte:1,prixUnitaire:d,frais:0,total:d,fournisseur:x.responsable||'',reference:'Avance '+x.id,note:'Achat créé lors de la clôture de l’avance.'});
+  }
+  saveDB();
+  alert('Avance clôturée. Reste rendu : '+money(x.resteRendu));
+}
+function removeItem(type,id){
+  if(!confirm('Supprimer cette opération ?'))return;
+  db[type]=db[type].filter(x=>x.id!==id);
+  saveDB();
+}
+function seedDemo(){
+  if(!confirm('Charger un exemple de démonstration dans le projet actuel ? Les données de CE projet seront remplacées.'))return;
+  const fid='F-DEMO-001';
+  db={
+    fonds:[{id:fid,nom:'Fonds Électronique Octobre',date:'2026-10-01',bailleur:'Bailleur principal',montant:10000000,objet:'Achat et revente de matériels électroniques',statut:'En cours'}],
+    achats:[
+      {id:'A1',fondId:fid,date:'2026-10-02',produit:'Samsung A55',categorie:'Téléphone',qte:3,prixUnitaire:1200000,frais:100000,total:3700000,fournisseur:'Fournisseur A',reference:'FAC-001',note:''},
+      {id:'A2',fondId:fid,date:'2026-10-03',produit:'Laptop Lenovo',categorie:'Ordinateur',qte:1,prixUnitaire:1800000,frais:50000,total:1850000,fournisseur:'Fournisseur B',reference:'FAC-002',note:''}
+    ],
+    avances:[{id:'AV1',fondId:fid,date:'2026-10-04',montant:1000000,responsable:'Acheteur terrain',motif:'Commande de 2 smartphones',note:'En attente de livraison',statut:'en_cours'}],
+    ventes:[{id:'V1',fondId:fid,date:'2026-10-05',produit:'Samsung A55 × 2',client:'Bailleur principal',cout:2400000,prix:2800000,note:'Livraison partielle'}]
+  };
+  currentProject().db=db;
+  saveDB(); switchView('dashboard');
+}
+function safeFileName(name){
+  return (name||'gestion-fonds').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-_]+/gi,'_').replace(/^_+|_+$/g,'') || 'gestion-fonds';
+}
+function downloadTextFile(filename,content){
+  if(window.AndroidBridge && typeof AndroidBridge.saveTextFile==='function'){
+    AndroidBridge.saveTextFile(filename,content);
+    showAutosave('✓ Sauvegarde prête à enregistrer');
+    return;
+  }
+  const blob=new Blob([content],{type:'application/json;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+function saveCurrentProject(){
+  saveState();
+  const p=currentProject();
+  const snapshot={
+    format:'Gestion Fonds Electronique',
+    version:3,
+    savedAt:new Date().toISOString(),
+    project:p
+  };
+  downloadTextFile(safeFileName(p.name)+'-'+today()+'.json',JSON.stringify(snapshot,null,2));
+}
+function exportData(){
+  saveState();
+  const snapshot={format:'Gestion Fonds Electronique - sauvegarde complète',version:3,savedAt:new Date().toISOString(),appState};
+  downloadTextFile('Gestion-Fonds-Tous-Projets-'+today()+'.json',JSON.stringify(snapshot,null,2));
+}
+function printReport(){
+  switchView('rapports'); setTimeout(()=>window.print(),100);
+}
+function enableDepthInteraction(){
+  if(!window.matchMedia || !window.matchMedia('(pointer:fine)').matches)return;
+  document.addEventListener('pointermove',e=>{
+    const el=e.target.closest('.card,.kpi,.hero');
+    if(!el)return;
+    const r=el.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    el.style.transform=`perspective(950px) rotateX(${-y*2.5}deg) rotateY(${x*3}deg) translateY(-2px)`;
+  });
+  document.addEventListener('pointerout',e=>{
+    const el=e.target.closest && e.target.closest('.card,.kpi,.hero');
+    if(el)el.style.transform='';
+  });
+}
+renderAll();
+enableDepthInteraction();
+</script>
+</body>
+</html>

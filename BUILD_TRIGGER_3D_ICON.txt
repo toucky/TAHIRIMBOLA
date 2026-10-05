@@ -1,0 +1,1 @@
+Trigger PR workflow build for Gestion Fonds v1.0.1 3D icon.

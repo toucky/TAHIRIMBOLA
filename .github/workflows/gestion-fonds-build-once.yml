@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -40,17 +43,12 @@ jobs:
 
       - name: Prepare output
         run: |
-          cp app/build/outputs/apk/debug/app-debug.apk /tmp/Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk
-          base64 /tmp/Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk > /tmp/Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk.b64
-          sha256sum /tmp/Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk > /tmp/Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk.sha256
+          cp app/build/outputs/apk/debug/app-debug.apk Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk
+          sha256sum Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk > Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk.sha256
 
-      - name: Commit encoded APK to build branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          mkdir -p build-output
-          cp /tmp/Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk.b64 build-output/
-          cp /tmp/Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk.sha256 build-output/
-          git add build-output
-          git commit -m "Build Gestion Fonds v1.0.1 3D icon APK" || exit 0
-          git push origin HEAD:gestion-fonds-icon-build
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D
+          path: Gestion-Fonds-APP-MADA-v1.0.1-ICON-3D.apk
+          retention-days: 7

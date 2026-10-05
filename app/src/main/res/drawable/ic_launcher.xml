@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- deep 3D shadow -->
+    <path
+        android:fillColor="#073B8F"
+        android:pathData="M22,8 H88 C96,8 102,14 102,22 V88 C102,96 96,102 88,102 H22 C14,102 8,96 8,88 V22 C8,14 14,8 22,8 Z"/>
+
+    <!-- glossy blue tile -->
+    <path
+        android:fillColor="#0A84FF"
+        android:pathData="M18,4 H86 C95,4 101,10 101,19 V86 C101,95 95,101 86,101 H18 C9,101 4,95 4,86 V19 C4,10 9,4 18,4 Z"/>
+
+    <!-- upper glass highlight -->
+    <path
+        android:fillColor="#4DB8FF"
+        android:pathData="M18,8 H86 C91,8 96,13 96,19 V35 C77,25 40,23 9,37 V19 C9,13 13,8 18,8 Z"/>
+
+    <!-- chart bar shadows -->
+    <path android:fillColor="#9A5A00" android:pathData="M18,53 H29 V73 H18 Z"/>
+    <path android:fillColor="#9A5A00" android:pathData="M32,45 H43 V73 H32 Z"/>
+    <path android:fillColor="#9A5A00" android:pathData="M46,35 H57 V73 H46 Z"/>
+
+    <!-- gold chart bars -->
+    <path android:fillColor="#FFD60A" android:pathData="M16,50 H27 V70 H16 Z"/>
+    <path android:fillColor="#FFC107" android:pathData="M30,42 H41 V70 H30 Z"/>
+    <path android:fillColor="#FFB300" android:pathData="M44,32 H55 V70 H44 Z"/>
+
+    <!-- bar shine -->
+    <path android:fillColor="#FFF0A3" android:pathData="M18,52 H21 V68 H18 Z"/>
+    <path android:fillColor="#FFE680" android:pathData="M32,44 H35 V68 H32 Z"/>
+    <path android:fillColor="#FFDF66" android:pathData="M46,34 H49 V68 H46 Z"/>
+
+    <!-- rising arrow dark extrusion -->
+    <path
+        android:fillColor="#A45E00"
+        android:pathData="M21,43 L36,30 L46,37 L65,18 L60,13 L82,12 L81,34 L75,28 L47,50 L36,42 L26,51 Z"/>
+
+    <!-- rising gold arrow -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M20,39 L35,26 L45,33 L64,14 L59,9 L81,8 L80,30 L74,24 L46,46 L35,38 L25,47 Z"/>
+
+    <!-- phone/device shadow -->
+    <path
+        android:fillColor="#07306F"
+        android:pathData="M66,44 H84 C88,44 90,47 90,51 V75 C90,79 88,82 84,82 H66 C62,82 60,79 60,75 V51 C60,47 62,44 66,44 Z"/>
+
+    <!-- phone/device body -->
+    <path
+        android:fillColor="#DDEBFF"
+        android:pathData="M64,41 H82 C86,41 88,44 88,48 V73 C88,77 86,79 82,79 H64 C60,79 58,77 58,73 V48 C58,44 60,41 64,41 Z"/>
+    <path android:fillColor="#95B9E9" android:pathData="M63,46 H83 V69 H63 Z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M69,73 H77 V75 H69 Z"/>
+
+    <!-- coin shadow -->
+    <path
+        android:fillColor="#A86200"
+        android:pathData="M54,65 m-23,0 a23,23 0,1 0,46,0 a23,23 0,1 0,-46,0"/>
+
+    <!-- gold coin -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M51,62 m-23,0 a23,23 0,1 0,46,0 a23,23 0,1 0,-46,0"/>
+
+    <!-- inner coin -->
+    <path
+        android:fillColor="#FFDA44"
+        android:pathData="M51,62 m-18,0 a18,18 0,1 0,36,0 a18,18 0,1 0,-36,0"/>
+    <path
+        android:fillColor="#FFF2A8"
+        android:pathData="M39,47 C45,42 56,41 64,47 C55,44 47,45 39,52 Z"/>
+
+    <!-- stylized Ariary A -->
+    <path
+        android:fillColor="#9B5B00"
+        android:pathData="M41,72 L49,50 H55 L64,72 H58 L56,66 H47 L45,72 Z M49,61 H54 L51.5,54 Z"/>
+
+    <!-- small r -->
+    <path
+        android:fillColor="#9B5B00"
+        android:pathData="M64,59 H69 V62 C71,59 74,58 77,59 V64 C73,63 70,65 70,70 V72 H64 Z"/>
+
+    <!-- bottom glossy rim -->
+    <path
+        android:fillColor="#0061C9"
+        android:pathData="M14,90 C30,96 78,98 92,88 C90,95 87,97 81,97 H22 C16,97 12,95 14,90 Z"/>
+
+    <!-- tiny shine dots -->
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.85"
+        android:pathData="M17,14 m-3,0 a3,3 0,1 0,6,0 a3,3 0,1 0,-6,0"/>
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.55"
+        android:pathData="M89,23 m-2,0 a2,2 0,1 0,4,0 a2,2 0,1 0,-4,0"/>
+</vector>
